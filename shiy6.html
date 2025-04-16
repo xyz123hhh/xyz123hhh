@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>温度变化</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.32/esri/themes/light/main.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #header {
+            height: 60px;
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #mapDiv {
+            flex: 1;
+        }
+        #basemapGalleryContainer {
+            height: 120px;
+            background: #f5f5f5;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        .esri-ui-corner {
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h2>温度变化</h2>
+    </div>
+    <div id="mapDiv"></div>
+    <div id="basemapGalleryContainer"></div>
+
+    <script src="https://js.arcgis.com/4.32/"></script>
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/widgets/Legend",
+            "esri/widgets/ScaleBar",
+            "esri/widgets/Search",
+            "esri/widgets/LayerList",
+            "esri/widgets/BasemapGallery",
+        ], (
+            Map, MapView, FeatureLayer, 
+            Legend, ScaleBar, Search, LayerList, BasemapGallery
+        ) => {
+            // 初始化地图（替换为您自己的底图）
+            const map = new Map({
+                basemap: "streets-vector"
+            });
+
+            // 添加GeoScene Online专题图层（替换为您的图层URL）
+            const featureLayer = new FeatureLayer({
+                url: "https://www.geosceneonline.cn/server/rest/services/Hosted/温度插值裁剪1/FeatureServer/9"
+            });
+            map.add(featureLayer);
+
+            // 创建地图视图
+            const view = new MapView({
+                container: "mapDiv",
+                map: map,
+                center: [114.177, 35.302], // 设置初始中心点
+                zoom: 3
+            });
+
+            // 添加比例尺
+            const scaleBar = new ScaleBar({
+                view: view
+            });
+            view.ui.add(scaleBar, { position: "bottom-left" });
+
+            // 添加图例
+            const legend = new Legend({
+                view: view
+            });
+            view.ui.add(legend, "top-right");
+
+            // 添加搜索框
+            const searchWidget = new Search({ view });
+            view.ui.add(searchWidget, { position: "top-right" });
+
+            // 添加图层列表
+            const layerList = new LayerList({ view });
+            view.ui.add(layerList, { position: "top-left" });
+
+            // 添加底图库
+            const basemapGallery = new BasemapGallery({
+                view: view,
+                container: "basemapGalleryContainer"
+            });
+        });
+    </script>
+</body>
+</html>
